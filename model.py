@@ -14,17 +14,20 @@ class glove_model(object):
         self.dim = 100
         self.x_max = 30
 
+    # 初始化训练参数
     def create_weights(self, vocab_len):
         emb_matrix = np.random.randn(self.dim, vocab_len)
         bias_array = np.random.randn(vocab_len)
         return emb_matrix, bias_array
 
+    # 根据词频最大值限制，建立训练参数函数
     def weight_function(self, x):
         if x < self.x_max:
             return np.power((x / self.x_max), 0.75)
         else:
             return 1
 
+    # 向前传播的计算，最主要是loss值的计算，以及参数值的保存
     def forward_propagate(self, emb_matrix, bias_array, index_i, index_k):
         w_i = emb_matrix[:, index_i]
         w_k = emb_matrix[:, index_k]
@@ -36,6 +39,7 @@ class glove_model(object):
         calc_param = {"w_i": w_i, "w_k": w_k, "x_ik": x_ik}
         return loss, diff, calc_param
 
+    # 反向传播的计算，用于计算梯度
     def backward_propagate(self, diff, calc_param):
         w_i = calc_param["w_i"]
         w_k = calc_param["w_k"]
@@ -46,6 +50,7 @@ class glove_model(object):
         grads = {"dw_i": dw_i, "dw_k": dw_k, "db_i": db_i, "db_k": db_k}
         return grads
 
+    # 一次训练循环，包括正向、反向传播，以及参数更新
     def one_circle(self, emb_matrix, bias_array, index_i, index_k):
         loss, diff, calc_param = self.forward_propagate(emb_matrix, bias_array, index_i, index_k)
         grads = self.backward_propagate(diff, calc_param)
@@ -59,6 +64,7 @@ class glove_model(object):
         bias_array[index_k] -= self.learn_rate * db_k
         return loss
 
+    # 对所有数据进行训练
     def train(self):
         vocab_len = len(self.vocab_list)
         emb_matrix, bias_array = self.create_weights(vocab_len)
