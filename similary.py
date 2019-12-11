@@ -3,21 +3,26 @@
 import numpy as np
 import operator
 
+# cos相似度计算公式
 def cos_sim(colA, colB):
     return np.dot(colA.T, colB) / (np.linalg.norm(colA) * np.linalg.norm(colB))
 
+# 获取词典
 def get_vocab(vocab_path):
     vocab_array = np.load(vocab_path)
     vocab_list = vocab_array.tolist()
     return vocab_list
 
+# 获取嵌入矩阵
 def get_embedding_mat(embedding_path):
     return np.load(embedding_path)
 
+# 对输入词进行处理，获得嵌入向量
 def embedding(word, embedding_mat, vocab_list):
     index = vocab_list.index(word)
     return embedding_mat[:, index]
 
+# 计算两个词的相似度
 def word_sim_course(word1, word2, vocab_list, emb_mat):
     # vocab_list = get_vocab(vocab_path)
     # emb_mat = get_embedding_mat(emb_path)
@@ -26,6 +31,7 @@ def word_sim_course(word1, word2, vocab_list, emb_mat):
     course = cos_sim(word1_emb, word2_emb)
     return course
 
+# 计算目标词与词典中所有词的相似度
 def words_sim_course(target_word, vocab_path, emb_path):
     course_dic = {}
     vocab_list = get_vocab(vocab_path)
@@ -38,7 +44,7 @@ def words_sim_course(target_word, vocab_path, emb_path):
     # course_dic = sorted(course_dic.values(), reverse=True)
     # course_dic = sorted(course_dic.items(), key=operator.itemgetter(1), reverse=True)
     return course_dic
-
+# 获得相似度最高的前几个词
 def most_sim_words(course_dic, count):
     course_dic = sorted(course_dic.items(), key=operator.itemgetter(1), reverse=True)
     most_sim = {}
