@@ -11,6 +11,7 @@ class create_co_occurrence(object):
         self.mat_save_path = mat_save_path
         self.window_size = window_size
 
+    # 对原始数据做处理，去掉各类符号，然后按句子进行切分，使数据集中每一行是一个单独的句子。
     def clear_data(self):
         fr = open(self.native_data_path, 'r')
         sentence_list = []
@@ -25,6 +26,7 @@ class create_co_occurrence(object):
                 sentence_list.append(sentence.strip(' '))
         return sentence_list
 
+    # 创建一个词典，包含数据集中所有单词。
     def create_vocab_list(self):
         sentence_list = self.clear_data()
         vocab_set = set([])
@@ -38,9 +40,11 @@ class create_co_occurrence(object):
         print("vocab list created!")
         print("vocab list size:", vocab_file.size)
 
+    # 加载词典
     def get_vocab_list(self):
         return np.load(self.vocab_save_path)
 
+    # 每输入一个训练数据（句子），按照window_size创建词对，然后对联合矩阵进行更新
     def calculate_num(self, sentence, co_matrix, vocab_list):
         word_list = re.split(r'\W+', sentence)
         # if '' in word_list:
@@ -63,6 +67,7 @@ class create_co_occurrence(object):
                     context_index = vocab_list.index(context_word)
                     co_matrix[centre_index, context_index] += 1
 
+    # 创建联合矩阵
     def create_co_matrix(self):
         vocab_list = self.get_vocab_list()
         vocab_list = vocab_list.tolist()
