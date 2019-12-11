@@ -11,10 +11,10 @@ emb_save_path = 'datas/embedding.npy'
 epoch = 200
 learn_rate = 0.01
 
-# glove_model = model.glove_model(input_matrix, vocab_list, epoch, learn_rate, emb_save_path, loss_save_path)
-#
-# glove_model.train()
+glove_model = model.glove_model(input_matrix, vocab_list, epoch, learn_rate, emb_save_path, loss_save_path)
 
-# loss = np.load(loss_save_path)
-# plt.plot(loss, '.-', color='r' ,label="loss")
-# plt.show()
+glove_model.train()
+
+loss = np.load(loss_save_path)
+plt.plot(loss, '.-', color='r' ,label="loss")
+plt.show()
